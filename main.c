@@ -1,106 +1,77 @@
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <string.h>
+#include <time.h>
+
 #include "deque.h"
 #include "bubblesort.h"
 #include "heapsort.h"
 
-// Получение числа с проверкой ввода
-int get_integer_input(char* prompt) {
-    int value;
-    int check = 0;
-    char buffer;
-    while (check != 1) {
-        printf("%s", prompt);
-        check = scanf("%d", &value);
-        if (check == 1) {
-            if (scanf("%1[^\n]", &buffer) == 1) {
-                printf("Не должно быть букв\n");
-                scanf("%*[^\n]");
-                check = 0;
-                continue;
-            }
-            return value;
-        }
-        printf("Ошибка ввода\n");
-        scanf("%*[^\n]");
-    }
-    return 1;
-}
-
-// Считываем числа из файла в дек
-void read_file_to_deque(const char* fname, deque_t* deque) {
-    FILE* file = fopen(fname, "r");
-    if (!file) {
-        printf("Не удалось открыть файл %s\n", fname);
-        return;
-    }
-    int num;
-    while (fscanf(file, "%d", &num) == 1) {
-        deque_push_back(deque, num);
-    }
-    fclose(file);
-}
-
-// Сортировка и запись времени
-void sort_and_time(deque_t* deque, void (*sort_func)(deque_t*), const char* sort_name) {
-    clock_t start = clock();
-    sort_func(deque);
-    clock_t duration = clock() - start;
-
-    printf("%s сортировка завершена. Время: %f секунд\n", sort_name, (float)duration / CLOCKS_PER_SEC);
-
-    // Запись времени в файл
-    FILE* file = fopen("time.txt", "a");
-    if (file) {
-        fprintf(file, "%f ", (float)duration / CLOCKS_PER_SEC);
-        fclose(file);
-    }
-}
-
-int main() {
+int main(int argc, char **argv) {
     setlocale(LC_ALL, "Russian");
 
-    // Список файлов с тестовыми данными
-    const char* test_files[] = {
-        "numbers_10.txt",
-        "numbers_100.txt",
-        "numbers_1000.txt",
-        "numbers_10000.txt",
-        "numbers_100000.txt"
-    };
-    const int num_files = 5;
+    deque_t deque;
+    deque_init(&deque);
 
-    // Очищаем старый файл с временем
-    FILE* f = fopen("time.txt", "w");
-    if (f) fclose(f);
+    void (*sort_func)(deque_t *) = heap_sort;
 
-    for (int i = 0; i < num_files; i++) {
-        printf("\nФайл: %s\n", test_files[i]);
-        deque_t deque;
+    for (int i = 1; i < argc; i++) {
 
-        // --- Heap Sort ---
-        deque_init(&deque);
-        read_file_to_deque(test_files[i], &deque);
-        sort_and_time(&deque, heap_sort, "Heap");
-        free_deque(&deque);
+        if (!strcmp(argv[i], "--heap")) {
+            sort_func = heap_sort;
+        }
+        else if (!strcmp(argv[i], "--bubble")) {
+            sort_func = bubble_sort;
+        }
 
-        // --- Bubble Sort ---
-        deque_init(&deque);
-        read_file_to_deque(test_files[i], &deque);
-        sort_and_time(&deque, bubble_sort, "Bubble");
-        free_deque(&deque);
+        else if (!strcmp(argv[i], "--10")) {
+            read_from("numbers_1000.txt", &deque);
+        }
+        else if (!strcmp(argv[i], "--100")) {
+            read_from("numbers_6500.txt", &deque);
+        }
+        else if (!strcmp(argv[i], "--1000")) {
+            read_from("numbers_10000.txt", &deque);
+        }
+        else if (!strcmp(argv[i], "--10000")) {
+            read_from("numbers_50000.txt", &deque);
+        }
+        else if (!strcmp(argv[i], "--100000")) {
+            read_from("numbers_100000.txt", &deque);
+        }
 
-        // Перевод строки в time.txt после каждой пары
-        f = fopen("time.txt", "a");
-        if (f) {
-            fprintf(f, "\n");
-            fclose(f);
+        else if (!strcmp(argv[i], "--file")) {
+            printf("Исходный ряд:\n");
+            read_from("stalin.txt", &deque);
+            free_deque(&deque);
+
+            printf("Отсортированный ряд:\n");
+            read_from("sorted.txt", &deque);
+            free_deque(&deque);
+            return 0;
         }
     }
 
-    printf("\nГотово! Файл time.txt обновлен.\n");
+    if (deque.front == NULL) {
+        printf("Нет данных для сортировки\n");
+        return 1;
+    }
+
+    write_to(&deque, "stalin.txt");
+
+    clock_t start = clock();
+    sort_func(&deque);
+    clock_t duration = clock() - start;
+
+    write_to(&deque, "sorted.txt");
+
+    FILE *file = fopen("time.txt", "a");
+    if (file) {
+        fprintf(file, "%f\n", (float)duration / CLOCKS_PER_SEC);
+        fclose(file);
+    }
+
+    free_deque(&deque);
     return 0;
 }

@@ -8,7 +8,7 @@ void deque_init(deque_t *deque){
 int deque_push_front(deque_t *deque, int value){
     node_t *new_node = malloc(sizeof(node_t));
     if (new_node == NULL){
-        printf("Ошибка выделения памяти\n");
+        printf("РЅРµ РІС‹РґРµР»РёР»Р°СЃСЊ РїР°РјСЏС‚СЊ\n");
         return 0;
     }
 
@@ -29,7 +29,7 @@ int deque_push_front(deque_t *deque, int value){
 int deque_push_back(deque_t *deque, int value){
     node_t *new_node = malloc(sizeof(node_t));
     if (new_node == NULL){
-        printf("Ошибка выделения памяти\n");
+        printf("РЅРµ РІС‹РґРµР»РёР»Р°СЃСЊ РїР°РјСЏС‚СЊ\n");
         return 0;
     }
 
@@ -112,7 +112,7 @@ int deque_add_by_index(deque_t *deque, int index, int value){
 
     node_t *new_node = malloc(sizeof(node_t));
     if (new_node == NULL){
-        printf("Ошибка выделения памяти\n");
+        printf("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ\n");
         return 0;
     }
 
@@ -136,7 +136,7 @@ void free_deque(deque_t *deque){
 void write_to(deque_t* deque, char* fname) {
     FILE* file = fopen(fname, "w");  
     if (!file) {
-        printf("Файл накрылся медным тазом");
+        printf("РћС€РёР±РєР° С„Р°Р№Р»Р°");
         return;
     }
     
@@ -152,7 +152,7 @@ void write_to(deque_t* deque, char* fname) {
 void read_from(char* fname, deque_t* deque) {
     FILE* file = fopen(fname, "r");
     if (!file) {
-        printf("Не удалось открыть файл %s\n", fname);
+        printf("РћС€РёР±РєР° С„Р°Р№Р»Р° %s\n", fname);
         return;
     }
 

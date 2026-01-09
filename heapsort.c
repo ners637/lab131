@@ -49,7 +49,6 @@ void heap_sort(deque_t *deque){
         deque_push_front(&sorted, max);
     }
 
-    /* переносим обратно */
     while (sorted.front) {
         int val;
         deque_pop_front(&sorted, &val);
