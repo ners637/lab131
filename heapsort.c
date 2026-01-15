@@ -1,57 +1,61 @@
-#include "heapsort.h"
+#include "deque.h"
 
-static int deque_find_max(deque_t *deque) {
-    node_t *cur = deque->front;
-    int max = cur->value;
-
-    while (cur) {
-        if (cur->value > max)
-            max = cur->value;
-        cur = cur->next;
+int deque_size(deque_t *deque) {
+    int count = 0;
+    node_t *curr = deque->front;
+    while (curr) {
+        count++;
+        curr = curr->next;
     }
-    return max;
+    return count;
 }
 
-static void deque_remove_value(deque_t *deque, int value) {
-    node_t *cur = deque->front;
-
-    while (cur) {
-        if (cur->value == value) {
-            if (cur->prev)
-                cur->prev->next = cur->next;
-            else
-                deque->front = cur->next;
-
-            if (cur->next)
-                cur->next->prev = cur->prev;
-            else
-                deque->back = cur->prev;
-
-            free(cur);
-            return;
-        }
-        cur = cur->next;
-    }
-}
-
-
-void heap_sort(deque_t *deque){
-    if (!deque->front || !deque->front->next) {
-        return;
-    }
+void heap_sort(deque_t *deque) {
+    if (!deque || !deque->front || !deque->front->next) return;
 
     deque_t sorted;
     deque_init(&sorted);
 
-    while (deque->front) {
-        int max = deque_find_max(deque);
-        deque_remove_value(deque, max);
-        deque_push_front(&sorted, max);
+    int total = deque_size(deque);
+
+    for (int i = 0; i < total; i++) {
+        int min;
+        if (deque_pop_front(deque, &min) == 0) continue;
+
+        int n = deque_size(deque);
+        deque_t temp;
+        deque_init(&temp);
+
+        for (int j = 0; j < n; j++) {
+            int val;
+            if (deque_pop_front(deque, &val) == 0) continue;
+
+            if (val < min) {
+                deque_push_back(&temp, min);
+                min = val;
+            } else {
+                deque_push_back(&temp, val);
+            }
+        }
+
+        deque_push_back(&sorted, min);
+
+        int temp_size = deque_size(&temp);
+        for (int j = 0; j < temp_size; j++) {
+            int val;
+            deque_pop_front(&temp, &val);
+            deque_push_back(deque, val);
+        }
+
+        free_deque(&temp);
     }
 
-    while (sorted.front) {
+    int sorted_size = deque_size(&sorted);
+    for (int i = 0; i < sorted_size; i++) {
         int val;
         deque_pop_front(&sorted, &val);
         deque_push_back(deque, val);
     }
+
+    free_deque(&sorted);
 }

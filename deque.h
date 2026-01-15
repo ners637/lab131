@@ -21,9 +21,8 @@ int deque_push_back(deque_t *deque, int value);
 int deque_pop_front(deque_t *deque, int *value);
 int deque_pop_back(deque_t *deque, int *value);
 
-int deque_add_by_index(deque_t *deque, int index, int value);
-
 void free_deque(deque_t *deque);
 
 void write_to(deque_t* list, char* fname);
 void read_from(char* fname, deque_t* list);
+void print_deque(deque_t *deque);

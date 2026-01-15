@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
         }
 
         else if (!strcmp(argv[i], "--10")) {
-            read_from("numbers_1000.txt", &deque);
+            read_from("numbers_10.txt", &deque);
         }
         else if (!strcmp(argv[i], "--100")) {
             read_from("numbers_6500.txt", &deque);
@@ -42,15 +42,20 @@ int main(int argc, char **argv) {
         }
 
         else if (!strcmp(argv[i], "--file")) {
+
             printf("Исходный ряд:\n");
             read_from("stalin.txt", &deque);
+            print_deque(&deque);
             free_deque(&deque);
 
             printf("Отсортированный ряд:\n");
             read_from("sorted.txt", &deque);
+            print_deque(&deque);
             free_deque(&deque);
-            return 0;
-        }
+
+    return 0;
+}
+
     }
 
     if (deque.front == NULL) {

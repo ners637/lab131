@@ -89,43 +89,6 @@ int deque_pop_back(deque_t *deque, int *value){
     return 1;
 }
 
-int deque_add_by_index(deque_t *deque, int index, int value){
-    if (index < 0){
-        return 0;
-    }
-
-    if (index == 0){
-        return deque_push_front(deque, value);
-    }
-
-    node_t *current = deque->front;
-    int current_index = 0;
-
-    while (current != NULL && current_index < index){
-        current = current->next;
-        current_index++;
-    }
-
-    if (current == NULL){
-        return deque_push_back(deque, value);
-    }
-
-    node_t *new_node = malloc(sizeof(node_t));
-    if (new_node == NULL){
-        printf("������ ��������� ������\n");
-        return 0;
-    }
-
-    new_node->value = value;
-    new_node->next = current;
-    new_node->prev = current->prev;
-
-    current->prev->next = new_node;
-    current->prev = new_node;
-
-    return 1;
-}
-
 void free_deque(deque_t *deque){
     int tmp;
     while (deque->front != NULL){
@@ -162,4 +125,13 @@ void read_from(char* fname, deque_t* deque) {
     }
 
     fclose(file);
+}
+
+void print_deque(deque_t *deque) {
+    node_t *cur = deque->front;
+    while (cur) {
+        printf("%d ", cur->value);
+        cur = cur->next;
+    }
+    printf("\n");
 }
