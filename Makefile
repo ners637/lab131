@@ -2,10 +2,6 @@
 compile:
 	gcc main.c deque.c bubblesort.c heapsort.c -o main
 
-run: compile
-	./main --run
-
-
 file: compile
 	./main --file
 
